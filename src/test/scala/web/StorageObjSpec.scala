@@ -16,9 +16,9 @@ class StorageObjSpec extends FlatSpec with Matchers {
       )))
   }
 
-  "StorageObj" should "return new storage value" in {
+  "StorageObj" should "return new entry value" in {
     Storage.reference.reset(Storage(List()))
-    val out = Storage.transfer(Entry("From", "To", 123))
-    out should equal(Storage.reference.get())
+    val out: Entry = Storage.transfer(Entry("From", "To", 123))
+    out should equal(Entry("From", "To", 123))
   }
 }

@@ -6,12 +6,21 @@ import Atom.Atom
   * Created by martin on 21/08/17.
   */
 object Storage {
-  val reference: Atom[Storage] = Atom[Storage](Storage(List()))
+  val reference: Atom[Storage] = Atom[Storage](Storage(List(
 
-  def transfer(entry: Entry): Storage =
+    Entry("Donald duck", "Uncle Scrooge", 10),
+    Entry("Donald duck", "Uncle Scrooge", 50),
+    Entry("Uncle Scrooge", "Goldie O'Gilt", 20),
+    Entry("Uncle Scrooge", "Princess Oona", 40)
+
+  )))
+
+  def transfer(entry: Entry): Entry = {
     reference swap {
       _.transfer(entry)
     }
+    entry
+  }
 }
 
 case class Storage(entries: List[Entry]) {
@@ -19,19 +28,8 @@ case class Storage(entries: List[Entry]) {
   def transfer(entry: Entry): Storage =
     Storage(entries.+:(entry))
 
-  def sum(): Map[String, BigDecimal] =
-    Map[String, BigDecimal](
-      "Uncle Scrooge" -> -2,
-      "Donald duck" -> 2
-    )
+  def find(accountName: String): List[Entry] =
+    entries.filter(e => e.from == accountName || e.to == accountName)
 
-  //  def sum(): Map[String, BigDecimal] =
-  //    entries.get().foldLeft(Map[String, BigDecimal]())((balances: Map[String, BigDecimal], current: Entry) => {
-  //      val beneficiaryBalance: BigDecimal = balances.getOrElse(current.beneficiary, 0)
-  //      val recipientBalance: BigDecimal = balances.getOrElse(current.recipient, 0)
-  //      val removed = balances + (current.recipient -> (recipientBalance - current.amount))
-  //      val added = removed + (current.beneficiary -> (current.amount + beneficiaryBalance))
-  //      added
-  //    })
 }
 

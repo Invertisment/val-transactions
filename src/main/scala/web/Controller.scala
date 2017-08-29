@@ -13,10 +13,29 @@ object Controller {
 
   val service = HttpService {
 
-    case GET -> Root / "transactions" => Ok(Storage.reference.get().asJson)
+    /**
+      * All transactions
+      * curl -X GET "127.0.0.1:8080/transactions"
+      * [{"from":"Uncle Scrooge","to":"Princess Oona","amount":40}]
+      */
+    case GET -> Root / "transactions" => Ok(Storage.reference.get().entries.asJson)
 
-    case GET -> Root / "transactions" / name => Ok()
+    /**
+      * Transactions that include a person
+      * curl -X GET "127.0.0.1:8080/transactions/Donald%20duck"
+      * [{"from":"Uncle Scrooge","to":"Princess Oona","amount":40}]
+      */
+    case GET -> Root / "transactions" / name => Ok(Storage.reference.get().find(name).asJson)
 
-    //    case POST -> Root / "transactions" / owner / beneficiary => Ok()
+    /**
+      * New transaction
+      * curl -v -X POST "127.0.0.1:8080/transactions" --data '{"from":"Donald duck", "to":"Gyro Gearloose", "amount":1337}'
+      */
+    case req@POST -> Root / "transactions" =>
+      for {
+        entry <- req.as(jsonOf[Entry])
+        response <- Created(Storage.transfer(entry).asJson)
+      } yield response
+
   }
 }
