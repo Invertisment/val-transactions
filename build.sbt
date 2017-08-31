@@ -28,3 +28,12 @@ libraryDependencies ++= Seq(
   // parallelism
   "io.github.martintrojer" % "atom-scala_2.10" % "0.1-SNAPSHOT"
 )
+
+https://stackoverflow.com/a/28498443/2159808
+// META-INF discarding
+mergeStrategy in assembly <<= (mergeStrategy in assembly) {
+  (old) => {
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case x => MergeStrategy.first
+   }
+}
