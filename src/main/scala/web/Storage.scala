@@ -5,15 +5,19 @@ import Atom.Atom
 /**
   * Created by martin on 21/08/17.
   */
-object Storage {
-  val reference: Atom[Storage] = Atom[Storage](Storage(List(
+object ConcurrentStorage {
+  def apply(storage: Storage): ConcurrentStorage = ConcurrentStorage(Atom[Storage](storage))
 
-    Entry("Donald duck", "Uncle Scrooge", 10),
-    Entry("Donald duck", "Uncle Scrooge", 50),
-    Entry("Uncle Scrooge", "Goldie O'Gilt", 20),
-    Entry("Uncle Scrooge", "Princess Oona", 40)
+  def apply(): ConcurrentStorage = ConcurrentStorage(Storage(List()))
+}
 
-  )))
+case class ConcurrentStorage(reference: Atom[Storage]) {
+  //    Storage(List(
+  //    //    Entry("Donald duck", "Uncle Scrooge", 10),
+  //    //    Entry("Donald duck", "Uncle Scrooge", 50),
+  //    //    Entry("Uncle Scrooge", "Goldie O'Gilt", 20),
+  //    //    Entry("Uncle Scrooge", "Princess Oona", 40)
+  //  ))
 
   def transfer(entry: Entry): Entry = {
     reference swap {

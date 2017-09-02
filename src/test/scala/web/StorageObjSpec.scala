@@ -7,18 +7,25 @@ import org.scalatest._
   */
 class StorageObjSpec extends FlatSpec with Matchers {
 
-  "StorageObj" should "update itself" in {
-    Storage.reference.reset(Storage(List()))
-    Storage.transfer(Entry("From", "To", 123))
-    Storage.reference.get() should equal(
-      Storage(List(
-        Entry("From", "To", 123)
-      )))
+  val rand = new java.util.Random()
+
+  "ConcurrentStorage" should "set default Storage" in {
+    val entry = Entry("From_" + rand.nextInt(), "To_" + rand.nextInt(), rand.nextInt())
+    val concurrentStorage = ConcurrentStorage(Storage(List(entry)))
+    concurrentStorage.reference.get() should equal(Storage(List(entry)))
   }
 
-  "StorageObj" should "return new entry value" in {
-    Storage.reference.reset(Storage(List()))
-    val out: Entry = Storage.transfer(Entry("From", "To", 123))
-    out should equal(Entry("From", "To", 123))
+  "ConcurrentStorage" should "update itself" in {
+    val entry = Entry("From_" + rand.nextInt(), "To_" + rand.nextInt(), rand.nextInt())
+    val concurrentStorage = ConcurrentStorage()
+    concurrentStorage.transfer(entry)
+    concurrentStorage.reference.get() should equal(Storage(List(entry)))
+  }
+
+  "ConcurrentStorage" should "return new entry value" in {
+    val entry = Entry("From_" + rand.nextInt(), "To_" + rand.nextInt(), rand.nextInt())
+    val concurrentStorage = ConcurrentStorage()
+    val out: Entry = concurrentStorage.transfer(entry)
+    out should equal(entry)
   }
 }

@@ -6,7 +6,7 @@ version := "0.0.1-SNAPSHOT"
 scalaVersion := "2.12.3"
 
 val Http4sVersion = "0.17.0-RC1"
-
+val slf4jVersion = ""
 resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 
 libraryDependencies ++= Seq(
@@ -22,15 +22,21 @@ libraryDependencies ++= Seq(
   "com.chuusai" %% "shapeless" % "2.3.2",
   compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
 
+  // parallelism
+  "io.github.martintrojer" % "atom-scala_2.10" % "0.1-SNAPSHOT",
+
   // tests
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+  "org.http4s" %% "http4s-blaze-client" % Http4sVersion % "test",
 
-  // parallelism
-  "io.github.martintrojer" % "atom-scala_2.10" % "0.1-SNAPSHOT"
+  // logging
+  "org.slf4j" % "slf4j-simple" % "1.7.25" % "test"
 )
 
 mainClass in assembly := Some("web.Server")
 assemblyMergeStrategy in assembly := {
   case PathList("META-INF", _*) => MergeStrategy.first
-  case x => MergeStrategy.first
+  case _ => MergeStrategy.first
 }
+
+sbt.Keys.fork in Test := true

@@ -9,23 +9,23 @@ import org.http4s.dsl._
 /**
   * Created by martin on 21/08/17.
   */
-object Controller {
+object ServiceFactory {
 
-  val service = HttpService {
+  def createService(storage: ConcurrentStorage) = HttpService {
 
     /**
       * All transactions
       * curl -X GET "127.0.0.1:8080/transactions"
       * [{"from":"Uncle Scrooge","to":"Princess Oona","amount":40}]
       */
-    case GET -> Root / "transactions" => Ok(Storage.reference.get().entries.asJson)
+    case GET -> Root / "transactions" => Ok(storage.reference.get().entries.asJson)
 
     /**
       * Transactions that include a person
       * curl -X GET "127.0.0.1:8080/transactions/Donald%20duck"
       * [{"from":"Uncle Scrooge","to":"Princess Oona","amount":40}]
       */
-    case GET -> Root / "transactions" / name => Ok(Storage.reference.get().find(name).asJson)
+    case GET -> Root / "transactions" / name => Ok(storage.reference.get().find(name).asJson)
 
     /**
       * New transaction
@@ -34,7 +34,7 @@ object Controller {
     case req@POST -> Root / "transactions" =>
       for {
         entry <- req.as(jsonOf[Entry])
-        response <- Created(Storage.transfer(entry).asJson)
+        response <- Created(storage.transfer(entry).asJson)
       } yield response
 
   }
