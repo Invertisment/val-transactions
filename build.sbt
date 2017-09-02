@@ -18,8 +18,8 @@ libraryDependencies ++= Seq(
   // json
   "io.circe" %% "circe-generic" % "0.8.0",
   "io.circe" %% "circe-literal" % "0.8.0",
-  "com.chuusai" %% "shapeless" % "2.3.2",
   "io.circe" %% "circe-core" % "0.8.0",
+  "com.chuusai" %% "shapeless" % "2.3.2",
   compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
 
   // tests
@@ -29,11 +29,8 @@ libraryDependencies ++= Seq(
   "io.github.martintrojer" % "atom-scala_2.10" % "0.1-SNAPSHOT"
 )
 
-https://stackoverflow.com/a/28498443/2159808
-// META-INF discarding
-mergeStrategy in assembly <<= (mergeStrategy in assembly) {
-  (old) => {
-    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-    case x => MergeStrategy.first
-   }
+mainClass in assembly := Some("web.Server")
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", _*) => MergeStrategy.first
+  case x => MergeStrategy.first
 }
