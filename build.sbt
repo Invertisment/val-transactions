@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
 
 mainClass in assembly := Some("web.Server")
 assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", _*) => MergeStrategy.first
+  case PathList("META-INF", _*) => MergeStrategy.discard
   case _ => MergeStrategy.first
 }
 
