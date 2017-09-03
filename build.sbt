@@ -27,10 +27,7 @@ libraryDependencies ++= Seq(
 
   // tests
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-  "org.http4s" %% "http4s-blaze-client" % Http4sVersion % "test",
-
-  // logging
-  "org.slf4j" % "slf4j-simple" % "1.7.25" % "test"
+  "org.http4s" %% "http4s-blaze-client" % Http4sVersion % "test"
 )
 
 mainClass in assembly := Some("web.Server")
