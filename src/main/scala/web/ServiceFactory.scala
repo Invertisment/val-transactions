@@ -30,6 +30,7 @@ object ServiceFactory {
     /**
       * New transaction
       * curl -v -X POST "127.0.0.1:8080/transactions" --data '{"from":"Donald duck", "to":"Gyro Gearloose", "amount":1337}'
+      * {"from":"Donald duck","to":"Gyro Gearloose","amount":1337}
       */
     case req@POST -> Root / "transactions" =>
       for {
