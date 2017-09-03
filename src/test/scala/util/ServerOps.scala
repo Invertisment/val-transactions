@@ -13,6 +13,9 @@ import web.Server
 trait ServerOps extends BeforeAndAfterAll {
   this: Suite =>
 
+  val serverExecutionPool: ExecutorService = Executors.newSingleThreadExecutor()
+  val client = PooledHttp1Client()
+
   override def beforeAll(): Unit = {
     super.beforeAll()
     startAndWaitForServe()
@@ -22,9 +25,6 @@ trait ServerOps extends BeforeAndAfterAll {
     super.afterAll()
     stop()
   }
-
-  val serverExecutionPool: ExecutorService = Executors.newSingleThreadExecutor()
-  val client = PooledHttp1Client()
 
   def start(): Unit = {
     serverExecutionPool.execute(() => {
