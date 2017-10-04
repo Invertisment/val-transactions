@@ -7,6 +7,7 @@ import org.http4s.dsl._
 import org.http4s.{Method, Request, Uri}
 import org.scalatest.{FlatSpec, Matchers}
 import util.{ManualJson, ServerOps, TestEntryFactory}
+import Transaction._
 
 /**
   * Created by martin on 31/08/17.
@@ -17,8 +18,8 @@ class ControllerSpec extends FlatSpec with ServerOps with Matchers with ManualJs
   val baseUrl: Uri = Uri.uri("http://127.0.0.1:8080")
 
   "Controller" should "read storage" in {
-    val sampleEntry = makeEntry
-    Server.concurrentStorage.reference.reset(Storage(List(sampleEntry)))
+    val sampleEntry = makeTransaction
+    Server.concurrentStorage.reference.reset(Storage(Map(), List(sampleEntry)))
 
     val task = client.expect[String](baseUrl / "transactions")
     val response: Either[Throwable, String] = task.unsafeAttemptRun()
@@ -27,9 +28,9 @@ class ControllerSpec extends FlatSpec with ServerOps with Matchers with ManualJs
   }
 
   "Controller" should "put new items into storage" in {
-    val sampleEntry = makeEntry
-    val toPut = makeEntry
-    Server.concurrentStorage.reference.reset(Storage(List(sampleEntry)))
+    val sampleEntry = makeTransaction
+    val toPut = makeTransaction
+    Server.concurrentStorage.reference.reset(Storage(Map(), List(sampleEntry)))
 
     val task = client.expect[String](Request(Method.POST, baseUrl / "transactions").withBody(toPut.asJson))
     task.unsafeAttemptRun()
@@ -38,9 +39,9 @@ class ControllerSpec extends FlatSpec with ServerOps with Matchers with ManualJs
   }
 
   "Controller" should "return newly created item from post req" in {
-    val sampleEntry = makeEntry
-    val toPut = makeEntry
-    Server.concurrentStorage.reference.reset(Storage(List(sampleEntry)))
+    val sampleEntry = makeTransaction
+    val toPut = makeTransaction
+    Server.concurrentStorage.reference.reset(Storage(Map(), List(sampleEntry)))
 
     val task = client.expect[String](Request(Method.POST, baseUrl / "transactions").withBody(toPut.asJson))
     val response: Either[Throwable, String] = task.unsafeAttemptRun()
@@ -49,10 +50,10 @@ class ControllerSpec extends FlatSpec with ServerOps with Matchers with ManualJs
   }
 
   "Controller" should "search by from" in {
-    val entryList: List[Entry] = makeManyEntries()
-    Server.concurrentStorage.reference.reset(Storage(entryList))
+    val entryList: List[Transaction] = makeManyTransactions()
+    Server.concurrentStorage.reference.reset(Storage(Map(), entryList))
 
-    val anyEntry: Entry = entryList(random.nextInt(entryList.length))
+    val anyEntry: Transaction = entryList(random.nextInt(entryList.length))
 
     val task = client.expect[String](baseUrl / "transactions" / anyEntry.from)
     val response: Either[Throwable, String] = task.unsafeAttemptRun()
@@ -61,10 +62,10 @@ class ControllerSpec extends FlatSpec with ServerOps with Matchers with ManualJs
   }
 
   "Controller" should "search by to" in {
-    val entryList: List[Entry] = makeManyEntries()
-    Server.concurrentStorage.reference.reset(Storage(entryList))
+    val entryList: List[Transaction] = makeManyTransactions()
+    Server.concurrentStorage.reference.reset(Storage(Map(), entryList))
 
-    val anyEntry: Entry = entryList(random.nextInt(entryList.length))
+    val anyEntry: Transaction = entryList(random.nextInt(entryList.length))
 
     val task = client.expect[String](baseUrl / "transactions" / anyEntry.to)
     val response: Either[Throwable, String] = task.unsafeAttemptRun()

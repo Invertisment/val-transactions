@@ -8,18 +8,12 @@ import Atom.Atom
 object ConcurrentStorage {
   def apply(storage: Storage): ConcurrentStorage = ConcurrentStorage(Atom[Storage](storage))
 
-  def apply(): ConcurrentStorage = ConcurrentStorage(Storage(List()))
+  def apply(): ConcurrentStorage = ConcurrentStorage(Storage(Map(), List()))
 }
 
 case class ConcurrentStorage(reference: Atom[Storage]) {
-  //    Storage(List(
-  //    //    Entry("Donald duck", "Uncle Scrooge", 10),
-  //    //    Entry("Donald duck", "Uncle Scrooge", 50),
-  //    //    Entry("Uncle Scrooge", "Goldie O'Gilt", 20),
-  //    //    Entry("Uncle Scrooge", "Princess Oona", 40)
-  //  ))
 
-  def transfer(entry: Entry): Entry = {
+  def transfer(entry: Transaction): Transaction = {
     reference swap {
       _.transfer(entry)
     }
@@ -27,12 +21,12 @@ case class ConcurrentStorage(reference: Atom[Storage]) {
   }
 }
 
-case class Storage(entries: List[Entry]) {
+case class Storage(deposits: Map[String, Deposit], entries: List[Transaction]) {
 
-  def transfer(entry: Entry): Storage =
-    Storage(entries.+:(entry))
+  def transfer(entry: Transaction): Storage =
+    Storage(deposits, entries.+:(entry))
 
-  def find(accountName: String): List[Entry] =
+  def find(accountName: String): List[Transaction] =
     entries.filter(e => e.from == accountName || e.to == accountName)
 
 }

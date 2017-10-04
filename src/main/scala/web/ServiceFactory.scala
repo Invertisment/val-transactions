@@ -5,6 +5,7 @@ import io.circe.syntax._
 import org.http4s.HttpService
 import org.http4s.circe._
 import org.http4s.dsl._
+import Transaction._
 
 /**
   * Created by martin on 21/08/17.
@@ -34,7 +35,7 @@ object ServiceFactory {
       */
     case req@POST -> Root / "transactions" =>
       for {
-        entry <- req.as(jsonOf[Entry])
+        entry <- req.as(jsonOf[Transaction])
         response <- Created(storage.transfer(entry).asJson)
       } yield response
 

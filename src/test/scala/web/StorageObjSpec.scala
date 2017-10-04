@@ -1,31 +1,31 @@
 package web
 
 import org.scalatest._
+import util.TestEntryFactory
 
 /**
   * Created by martin on 21/08/17.
   */
-class StorageObjSpec extends FlatSpec with Matchers {
-
-  val rand = new java.util.Random()
+class StorageObjSpec extends FlatSpec with Matchers with TestEntryFactory {
 
   "ConcurrentStorage" should "set default Storage" in {
-    val entry = Entry("From_" + rand.nextInt(), "To_" + rand.nextInt(), rand.nextInt())
-    val concurrentStorage = ConcurrentStorage(Storage(List(entry)))
-    concurrentStorage.reference.get() should equal(Storage(List(entry)))
+    val entry = makeTransaction
+    val concurrentStorage = ConcurrentStorage(Storage(Map(), List(entry)))
+    concurrentStorage.reference.get() should equal(Storage(Map(), List(entry)))
   }
 
   "ConcurrentStorage" should "update itself" in {
-    val entry = Entry("From_" + rand.nextInt(), "To_" + rand.nextInt(), rand.nextInt())
+    val entry = makeTransaction
     val concurrentStorage = ConcurrentStorage()
     concurrentStorage.transfer(entry)
-    concurrentStorage.reference.get() should equal(Storage(List(entry)))
+    concurrentStorage.reference.get() should equal(Storage(Map(), List(entry)))
   }
 
   "ConcurrentStorage" should "return new entry value" in {
-    val entry = Entry("From_" + rand.nextInt(), "To_" + rand.nextInt(), rand.nextInt())
+    val entry = makeTransaction
     val concurrentStorage = ConcurrentStorage()
-    val out: Entry = concurrentStorage.transfer(entry)
+    val out: Transaction = concurrentStorage.transfer(entry)
     out should equal(entry)
   }
+
 }

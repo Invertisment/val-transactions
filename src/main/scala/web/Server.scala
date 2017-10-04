@@ -16,7 +16,7 @@ object Server extends StreamApp {
   val port: Int = 8080
   val ip: String = "0.0.0.0"
   val executorService: ExecutionContext = ExecutionContext.fromExecutorService(Executors.newCachedThreadPool())
-  val concurrentStorage = ConcurrentStorage(Storage(List()))
+  val concurrentStorage = ConcurrentStorage(Storage(Map(), List()))
 
   override def stream(args: List[String]): Stream[Task, Nothing] =
     BlazeBuilder
